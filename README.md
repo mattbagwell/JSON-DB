@@ -5,7 +5,15 @@ for simple projects where a database isn"t available/desired
 
 	var myStorage = new JsonDB();
   
-  
+### Usage ###
+
+    myStorage.loadData(data);
+
+    myStorage.saveData(data);
+
+Where *data* is an array/object of data to be stored.
+
+
 ### Options ###
 
 
