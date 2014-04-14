@@ -1,5 +1,5 @@
 Uses local JSON files for simple data storage and retrieval
-for simple projects where a database isn"t available/desired
+for projects where a database isn"t available/desired
 
 ### Initialization ###
 
