@@ -24,7 +24,7 @@ Items can be removed by deleting the text inside them.
 		<button data-jsondb-role="new"  data-jsondb-list="1">Add New +</button>
 
 <br>
-In Javascript is create a new JsonDB object:
+In Javascript, just create a new JsonDB object:
 
 	var myStorage = new JsonDB();
   
