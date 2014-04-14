@@ -7,14 +7,12 @@ JsonDB = (function(opts) {
     'use strict';
     var db = {},
         defaults = {
-            dataFileName    : 'data.json',
             dataFolder      : 'data',
             processor       : 'save.php',
-            saveTriggerID   : 'jsondb-save',
-            loadTriggerID   : 'jsondb-load',
-            newTriggerID    : 'jsondb-new',
-            listID          : 'jsondb-list'
         },
+        roleAttr = 'data-jsondb-role',
+        listAttr = 'data-jsondb-list',
+        fileAttr = 'data-jsondb-file',
         xhr = new XMLHttpRequest();
 
 // merge defaults with any supplied options
@@ -23,15 +21,15 @@ JsonDB = (function(opts) {
         defaults[i] = opts[i];
     }
 
-    function loadData(){
-        xhr.open("GET", defaults.dataFolder + '/' + defaults.dataFileName, false);
+    function loadData(dataFileName){
+        xhr.open("GET", defaults.dataFolder + '/' + dataFileName, false);
         xhr.send();
         return xhr.response;
     }
 
-    function saveData(data){
+    function saveData(data, dataFileName){
         var postData = serialize({
-                file : defaults.dataFileName,
+                file : dataFileName,
                 data : data
         });
         xhr.open("POST", defaults.dataFolder + '/' + defaults.processor, false);
@@ -45,40 +43,76 @@ JsonDB = (function(opts) {
     }
 
 
+
+    function matchesRole(el, i){
+        return el.getAttribute(roleAttr) === this; 
+    }
+
+
 // bind default "load" and "save" buttons (less coding for user)
 
     function bindEvents(){
-        var list = document.getElementById(defaults.listID);
-        var emptyChild = list.children[0] ? list.children[0] : document.createElement('div');
+        var lists = [];
 
-        document.getElementById(defaults.loadTriggerID).onclick = function(){
-            var data = db.loadData();
-            list.innerHTML = '';
-            for(var i in data){
+    // group all elements together based on their list number
+    // which is assigned via data attributes
+       
+        Array.prototype.filter.call(document.querySelectorAll('['+listAttr+']'), function(el, i, arr){
+            var index = parseInt(el.getAttribute('data-jsondb-list'));
+            if(typeof lists[index] === 'object'){
+                lists[index].push(el);
+            }else{
+                lists[index] = [el];
+            }
+        });
+
+
+        Array.prototype.forEach.call(lists, function(el, i, arr){
+
+        // "this" context for can be optionally set as an Array.filter() argument
+        //  Here we sneakily use it to pas the data-attribute we want to filter on
+        //   to the matchesRole() function above
+
+            var listEl = el.filter(matchesRole, 'list')[0];
+            var loadEl = el.filter(matchesRole, 'load')[0];
+            var saveEl = el.filter(matchesRole, 'save')[0];
+            var addEl  = el.filter(matchesRole, 'add')[0];
+
+            var emptyChild = listEl.children[0] ? listEl.children[0] : document.createElement('div');
+
+            var fileName = listEl.getAttribute(fileAttr);
+
+            loadEl.onclick = function(){
+                var data = db.loadData(fileName);
+                listEl.innerHTML = '';
+                for(var i in data){
+                    var newChild = emptyChild.cloneNode(false);
+                    var input = document.createElement('input');
+                         input.value = data[i];
+                         newChild.appendChild(input);
+                    listEl.appendChild(newChild);
+                }
+            };
+
+            saveEl.onclick = function(){
+                var data = [];
+                for(var i=0; i < listEl.childNodes.length; i++){
+                    var val = listEl.childNodes[i].getElementsByTagName('input')[0].value;
+                    if(val != ''){
+                        data.push(listEl.childNodes[i].getElementsByTagName('input')[0].value);
+                    }
+                }
+                db.saveData(data, fileName);
+            };
+
+            addEl.onclick = function(){
                 var newChild = emptyChild.cloneNode(false);
                 var input = document.createElement('input');
-                     input.value = data[i];
+                     input.value = 'new item';
                      newChild.appendChild(input);
-                list.appendChild(newChild);
-            }
-        };
-
-        document.getElementById(defaults.saveTriggerID).onclick = function(){
-            var data = [];
-            for(var i=0; i < list.childNodes.length; i++){
-                data.push(list.childNodes[i].getElementsByTagName('input')[0].value);
-            }
-            db.saveData(data);
-        };
-
-        document.getElementById(defaults.newTriggerID).onclick = function(){
-            var newChild = emptyChild.cloneNode(false);
-            var input = document.createElement('input');
-                 input.value = 'new item';
-                 newChild.appendChild(input);
-            list.appendChild(newChild);
-        };
-      
+                listEl.appendChild(newChild);
+            };
+        });
     }
 
 
@@ -100,16 +134,16 @@ JsonDB = (function(opts) {
         return qs.join('&');
     }
 
-    db.loadData = function(){
-        var data = loadData();
+    db.loadData = function(fileName){
+        var data = loadData(fileName);
         if(typeof data !== 'undefined'){
             return JSON.parse(data);
         }else{
             return false;
         }
     };
-    db.saveData = function(data){
-        return saveData(data);
+    db.saveData = function(data, fileName){
+        return saveData(data, fileName);
     };
 
     bindEvents();
