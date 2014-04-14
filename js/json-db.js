@@ -1,43 +1,4 @@
-/*
 
-Uses local JSON files for simple data storage and retrieval
-for simple projects where a database isn't available/desired
-
-USE:
-
-var myStorage = new JsonDB();
-
-
-OPTIONS:
-
-dataFileName    - name of the JSON file to store out data in
-                    default: 'data.json'
-
-dataFolder      - name of the folder containing our data file(s) 
-                    default: 'data'
-
-processor       - replace this to change the PHP file that saves the data
-                    default: 'save.php'
-
-saveTriggerID   - the ID of the element that triggers the data to be saved
-
-loadTriggerID   - the ID of the element that triggers the data to be loaded
-
-listID          - the ID of the parent element of the data. This can be any HTML
-                    element, and items will be inserted as children (defaulting to DIV tags)
-
-Using options:
-
-var myOpts = {
-    dataFileName    : 'newdata.json',
-    saveTriggerID   : 'myList-save',
-    loadTriggerID   : 'myList-load',
-    listID          : 'myList'
-};
-
-var myStorage = new JsonDB(myOpts);
-
-*/
 
 
 var JsonDB;
