@@ -1,4 +1,6 @@
-Uses local JSON files for simple data storage and retrieval for projects where a database isn't available/desired
+Uses local JSON files for simple data storage and retrieval for projects where a database isn't available/desired  
+
+Demo: http://www.mattbagwell.com/json-db/  
 
 ## Initialization ##
 
