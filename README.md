@@ -1,30 +1,35 @@
 Uses local JSON files for simple data storage and retrieval for projects where a database isn't available/desired
 
-### Initialization ###
+## Initialization ##
 
 Each storage "list" consists of four parts:
--	a List which contains items
+
+-	a List, which contains items
 -	a button to Save data
 -	a button to Load data
 -	a button to Add items to the list
 
-Items can be removed by deleting the text inside them.
+Items can be removed by deleting the text inside them.  
 
-Add **data-jsondb-list** attribute to your list wrapper. Also specify the file to store data using the **data-jsondb-file** attribute.
-Add the appropriate **data-jsondb-role** attribute to your List, Save, Load, and New buttons.  
+1.	Add a numeric **data-jsondb-list** attribute to your List, Save, Load, and Add elements. This prevents conflicts between multiple lists on the same page.
+2.	On your list element, specify the data file in the **data-jsondb-file** attribute.  
+3.	Add the appropriate **data-jsondb-role** attribute to your List, Save, Load, and New buttons.
 
-	<div data-jsondb-role="list" data-jsondb-list="1" data-jsondb-file="data.json"></div>
-	<button data-jsondb-role="load" data-jsondb-list="1">Load</button>
-	<button data-jsondb-role="save" data-jsondb-list="1">Save</button>
-	<button data-jsondb-role="new"  data-jsondb-list="1">Add New +</button>
+		<!-- list -->
+		<div data-jsondb-role="list" data-jsondb-list="1" data-jsondb-file="data.json"></div>
 
+		<!-- buttons -->
+		<button data-jsondb-role="load" data-jsondb-list="1">Load</button>
+		<button data-jsondb-role="save" data-jsondb-list="1">Save</button>
+		<button data-jsondb-role="new"  data-jsondb-list="1">Add New +</button>
 
-All we need to do in Javascript is create a new JsonDB object:
+<br>
+In Javascript is create a new JsonDB object:
 
 	var myStorage = new JsonDB();
   
 
-### Options ###
+## Options ##
 
 **dataFolder**  
 Name of the folder containing our data file(s)  
